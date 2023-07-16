@@ -7,6 +7,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Knp\Component\Pager\PaginatorInterface;
+
+
 
 class ApiController extends AbstractController
 {
@@ -18,7 +21,7 @@ class ApiController extends AbstractController
     }
 
     #[Route('/region', name: 'app_api_region', methods: ['GET'])]
-    public function region(SerializerInterface $serializerInterface)
+    public function region(SerializerInterface $serializerInterface, PaginatorInterface $paginator, Request $request)
     {
         //SerializerInterface est une interface qui permet de convertir des données en json
         $regions = file_get_contents('https://geo.api.gouv.fr/regions');
@@ -36,13 +39,22 @@ class ApiController extends AbstractController
 
         $regionObj = $serializerInterface->deserialize($regions, 'App\Entity\Region[]', 'json'); // deserialize() permet de convertir un json en objet. il faut lui passer le json et le type d'objet . Ici ce sera un tableau d'objets de type Region
 
+        //dd($regionObj);
+
+        // Pagination
+        $pagination = $paginator->paginate(
+            $regionObj,
+            $request->query->getInt('page', 1), // Récupère le numéro de page à partir de la requête, par défaut 1
+            6 // Nombre d'éléments par page
+        );
+
         return $this->render('api/regions.html.twig', [
-            'regions' => $regionObj,
+            'regions' => $pagination,
         ]);
     }
 
     #[Route('/departement', name: 'app_api_departement')]
-    public function departement(Request $request,SerializerInterface $serializerInterface)
+    public function departement(Request $request,SerializerInterface $serializerInterface, PaginatorInterface $paginator)
     {
         // Je récupère le code de la région dans l'url
         $codeRegion = $request->query->get('region');
@@ -62,18 +74,25 @@ class ApiController extends AbstractController
         // Puisseque j'ai pas d'entité departement, je ne peux pas utiliser deserialize() ou denormalize(). Pour cela, j'utilise decode() qui permet de convertir le json en tableau
 
         $departementsTab = $serializerInterface->decode($departements, 'json');
+        
+        $departementsObj = $serializerInterface->deserialize($departements, 'App\Entity\Departement[]', 'json');
 
+        //pagination
+         $pagination = $paginator->paginate(
+            $departementsObj,$request->query->getInt('page', 1), 12 ); 
 
+        
+        
 
         return $this->render('api/departements.html.twig', [
             'regions' => $regionsObj,
-            'departements' => $departementsTab
+            'departements' => $pagination
         ]);
     }
 
 
     #[Route('/commune', name: 'app_api_commune')]
-    public function commune(Request $request,SerializerInterface $serializerInterface)
+    public function commune(Request $request,SerializerInterface $serializerInterface, PaginatorInterface $paginator)
     {
         // Récupérer tous les départements
         $departements = file_get_contents('https://geo.api.gouv.fr/departements');
@@ -92,11 +111,25 @@ class ApiController extends AbstractController
         $communesTab = $serializerInterface->decode($communes, 'json');
 
         //dd($communesTab);
+        $communesObj = $serializerInterface->deserialize($communes, 'App\Entity\Commune[]', 'json');
+
+        //dd($communesObj);
+
+        //pagination
+        $pagination = $paginator->paginate(
+            $communesObj,
+            $request->query->getInt('page', 1),
+            15
+        ); 
+
+
+
+
 
         return $this->render('api/communes.html.twig',
         [
             'departements' => $departementTab,
-            'communes' => $communesTab
+            'communes' => $pagination
         ]);
     }
 }

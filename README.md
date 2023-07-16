@@ -53,3 +53,23 @@ Cette entité ne sera pas liée à une table dans la base de données. Elle va n
 17. Créer une méthode `departement` qui prend le serializer en argument et qui retourne un objet de type `Response` qui contient la liste des départements sous forme de JSON. Cette route doit être accessible à l'adresse `/departements` en méthode `GET` uniquement. Récupérer la liste des départements depuis l'api de `geo.gouv.fr` en utilisant l'url suivante: `https://geo.api.gouv.fr/departements`. `file_get_contents` et `deserialize` sont les fonctions à utiliser pour récupérer et sérialiser les données. `deserialize`  permet de convertir un json en objet. il faut lui passer le json et le type d'objet . Ici ce sera un tableau d'objets de type Departement. Dans la vue, afficher la liste des régions dans une balise select. Lorsqu'on sélectionne une région, la liste des départements de cette région doit s'afficher dans une autre balise select.
 
 18. Créer une méthode `commune` qui prend en argument le serializer et qui retourne un objet de type `Response` qui contient la liste des communes sous forme de JSON. Cette route doit être accessible à l'adresse `/communes` en méthode `GET` uniquement. Récupérer la liste des communes depuis l'api de `geo.gouv.fr` en utilisant l'url suivante: `https://geo.api.gouv.fr/communes`. `file_get_contents` et `deserialize` sont les fonctions à utiliser pour récupérer et sérialiser les données. `deserialize`  permet de convertir un json en objet. il faut lui passer le json et le type d'objet . Ici ce sera un tableau d'objets de type Commune. Dans la vue, afficher la liste des régions dans une balise select. Lorsqu'on sélectionne une région, la liste des départements de cette région doit s'afficher dans une autre balise select. Lorsqu'on sélectionne un département, la liste des communes de ce département doit s'afficher dans une autre balise select.
+
+19. Ajoute de la pagination. Pour cela, on va utiliser le bundle `KnpPaginatorBundle`. Pour l'installer, on va utiliser la commande suivante:
+    * `composer require knplabs/knp-paginator-bundle`
+  
+20. Pour faire la pagination sur une entité, il faut créer les entités  `Departement` et `Commune`. Pour cela, on va utiliser la commande suivante:
+    * `symfony console make:entity`
+  
+  Departement aura les propriétés suivantes:
+    * `nom` (string)
+    * `code` (string)
+    * `codeRegion` (string)
+  
+  Commune aura les propriétés suivantes:
+    * `nom` (string)
+    * `code` (string)
+    * `codeDepartement` (string)
+    * `codeRegion` (string)
+    * `population` (integer)
+    * `codesPostaux` (array)
+  

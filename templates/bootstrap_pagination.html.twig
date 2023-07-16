@@ -1,0 +1,14 @@
+{% extends '@KnpPaginator/Pagination/bootstrap_v5_pagination.html.twig' %}
+
+{% block pagination %}
+
+    {# Ajoutez les classes Bootstrap aux éléments de pagination #}
+    {% for page in pages %}
+        {% if page.isCurrent %}
+            <li class="page-item active"><span class="page-link">{{ page.number }}</span></li>
+        {% else %}
+            <li class="page-item"><a class="page-link" href="{{ path(route, query|merge({(pageParameterName): page})) }}">{{ page.number }}</a></li>
+        {% endif %}
+    {% endfor %}
+
+{% endblock %}
