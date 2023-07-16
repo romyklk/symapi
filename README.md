@@ -26,3 +26,19 @@ Dans ce projet, nous avons créé une API avec Symfony 6. L'API permet de créer
   
 11. Créer un controller `ApiController`
     * `symfony console make:controller`
+
+12. Installer le serializer pack qui va nous permettre de sérialiser les données.C'est à dire de les transformer en JSON ou XML par exemple pour les envoyer au client.
+    * `composer require symfony/serializer-pack`
+
+13. Installer le pack ORM qui va nous permettre de créer des entités 
+    * `composer require symfony/orm-pack`
+
+
+14. Créer une en entité `Region`
+    
+    * `symfony console make:entity`
+ Ayant les propriétés suivantes:
+    * nom (string)
+    * code (string)
+    * createdAt (datetimeImmutable)
+Cette entité ne sera pas liée à une table dans la base de données. Elle va nous permettre de créer des objets de type `Region` qui seront utilisés dans d'autres entités.Donc on va utiliser l'annotation `@ORM\Transient`  au dessus de la classe `Region` pour dire à Doctrine de ne pas créer de table dans la base de données pour cette entité.
