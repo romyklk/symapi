@@ -17,7 +17,7 @@ class ApiController extends AbstractController
         return $this->render('api/index.html.twig');
     }
 
-    #[Route('/region', name: 'app_api_region')]
+    #[Route('/region', name: 'app_api_region', methods: ['GET'])]
     public function region(SerializerInterface $serializerInterface)
     {
         //SerializerInterface est une interface qui permet de convertir des données en json
@@ -34,7 +34,7 @@ class ApiController extends AbstractController
 
         // deserialise() permet de convertir un tableau en objet. il faut lui passer le tableau et le type d'objet . Ici ce sera un tableau d'objets de type Region
 
-        $regionObj = $serializerInterface->deserialize($regions, 'App\Entity\Region[]', 'json');
+        $regionObj = $serializerInterface->deserialize($regions, 'App\Entity\Region[]', 'json'); // deserialize() permet de convertir un json en objet. il faut lui passer le json et le type d'objet . Ici ce sera un tableau d'objets de type Region
 
         return $this->render('api/regions.html.twig', [
             'regions' => $regionObj,
